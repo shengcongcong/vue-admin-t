@@ -91,28 +91,7 @@
       </el-link>
     </div>
 
-    <!-- 第三方登录 -->
-    <div class="third-party-login">
-      <div class="divider-container">
-        <div class="divider-line"></div>
-        <span class="divider-text">{{ t("login.otherLoginMethods") }}</span>
-        <div class="divider-line"></div>
-      </div>
-      <div class="social-login">
-        <div class="social-login__item">
-          <div class="i-svg:wechat" />
-        </div>
-        <div class="social-login__item">
-          <div class="i-svg:qq" />
-        </div>
-        <div class="social-login__item">
-          <div class="i-svg:github" />
-        </div>
-        <div class="social-login__item">
-          <div class="i-svg:gitee" />
-        </div>
-      </div>
-    </div>
+
   </div>
 </template>
 <script setup lang="ts">
@@ -122,12 +101,16 @@ import type { LoginRequest } from "@/types/api";
 import router from "@/router";
 import { useUserStore } from "@/store";
 import { AuthStorage } from "@/utils/auth";
+import { preventAuthLoop } from "@/composables/useOAuth";
 
 const { t } = useI18n();
 const userStore = useUserStore();
 const route = useRoute();
 
-onMounted(() => getCaptcha());
+onMounted(() => {
+  preventAuthLoop();
+  getCaptcha();
+});
 
 const loginFormRef = ref<FormInstance>();
 const loading = ref(false);
@@ -246,48 +229,5 @@ function toOtherForm(type: "register" | "resetPwd") {
   font-weight: 600;
 }
 
-.third-party-login {
-  .divider-container {
-    display: flex;
-    align-items: center;
-    margin: 16px 0;
 
-    .divider-line {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--el-border-color-light), transparent);
-    }
-
-    .divider-text {
-      padding: 0 16px;
-      font-size: 12px;
-      color: var(--el-text-color-regular);
-      white-space: nowrap;
-    }
-  }
-
-  .social-login {
-    display: flex;
-    gap: 1.25rem;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    color: var(--el-text-color-secondary);
-
-    &__item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.5rem;
-      font-size: 20px;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: background-color 0.3s ease;
-
-      &:hover {
-        background-color: var(--el-fill-color);
-      }
-    }
-  }
-}
 </style>

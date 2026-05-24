@@ -33,6 +33,15 @@
       </div>
     </template>
 
+    <!-- OAuth 第三方授权登录 -->
+    <div class="navbar-actions__item">
+      <el-tooltip content="第三方授权登录" placement="bottom">
+        <div @click="handleOAuthLogin('gitee')">
+          <div class="i-svg:gitee" style="font-size: 18px" />
+        </div>
+      </el-tooltip>
+    </div>
+
     <!-- 用户菜单 -->
     <div class="navbar-actions__item">
       <el-dropdown trigger="click">
@@ -81,6 +90,7 @@ import LangSelect from "@/components/LangSelect/index.vue";
 import NoticeDropdown from "@/components/NoticeDropdown/index.vue";
 import TenantSwitcher from "@/components/TenantSwitcher/index.vue";
 import { useTenantStoreHook } from "@/store/modules/tenant";
+import { SafeOAuthClient } from "@/composables/useOAuth";
 
 const { t } = useI18n();
 const appStore = useAppStore();
@@ -114,6 +124,11 @@ function handleTenantChange(tenantId: number) {
       ElMessage.error(error.message || "切换租户失败");
     }
   );
+}
+
+function handleOAuthLogin(provider: "github" | "gitee" | "wechat" | "qq") {
+  const client = new SafeOAuthClient(provider);
+  client.startAuth();
 }
 
 /**

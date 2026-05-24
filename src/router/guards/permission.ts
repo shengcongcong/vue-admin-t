@@ -13,9 +13,9 @@ import { setupSse } from "@/composables";
  * 处理登录验证、动态路由生成、404检测等
  */
 export function setupPermissionGuard() {
-  const whiteList = ["/login"];
+  const whiteList = ["/login", "/oauth/callback"];
 
-  router.beforeEach(async (to, _from, next) => {
+  router.beforeEach(async (to, _from) => {
     NProgress.start();
 
     try {
@@ -24,18 +24,16 @@ export function setupPermissionGuard() {
       // 未登录处理
       if (!isLoggedIn) {
         if (whiteList.includes(to.path)) {
-          next();
+          return true;
         } else {
-          next(`/login?redirect=${encodeURIComponent(to.fullPath)}`);
           NProgress.done();
+          return `/login?redirect=${encodeURIComponent(to.fullPath)}`;
         }
-        return;
       }
 
       // 已登录访问登录页，重定向到首页
       if (to.path === "/login") {
-        next({ path: "/" });
-        return;
+        return { path: "/" };
       }
 
       const permissionStore = usePermissionStore();
@@ -57,14 +55,12 @@ export function setupPermissionGuard() {
           router.addRoute(route);
         });
 
-        next({ ...to, replace: true });
-        return;
+        return { ...to, replace: true };
       }
 
       // 路由 404 检查
       if (to.matched.length === 0) {
-        next("/404");
-        return;
+        return "/404";
       }
 
       // 动态标题
@@ -73,12 +69,12 @@ export function setupPermissionGuard() {
         to.meta.title = title;
       }
 
-      next();
+      return true;
     } catch (error) {
       console.error("Route guard error:", error);
       await useUserStore().resetAllState();
-      next("/login");
       NProgress.done();
+      return "/login";
     }
   });
 

@@ -24,6 +24,12 @@ export const constantRoutes: RouteRecordRaw[] = [
   },
 
   {
+    path: "/oauth/callback",
+    component: () => import("@/views/oauth/callback.vue"),
+    meta: { hidden: true },
+  },
+
+  {
     path: "/",
     name: "/",
     component: Layout,
