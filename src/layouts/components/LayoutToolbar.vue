@@ -126,9 +126,12 @@ function handleTenantChange(tenantId: number) {
   );
 }
 
+const oauthLoading = ref(false);
+
 function handleOAuthLogin(provider: "github" | "gitee" | "wechat" | "qq") {
-  const client = new SafeOAuthClient(provider);
-  client.startAuth();
+  if (oauthLoading.value) return;
+  oauthLoading.value = true;
+  new SafeOAuthClient(provider).startAuth();
 }
 
 /**

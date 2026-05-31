@@ -33,6 +33,9 @@ import { configureVxeTable } from "@/plugins/vxe-table";
 // ===== 路由守卫 =====
 import { setupPermissionGuard } from "@/router/guards/permission";
 
+// ===== OAuth 防御守卫初始化（页面重载后从 sessionStorage 恢复）=====
+import { initAuthGuard } from "@/composables/useOAuth";
+
 // 创建 Vue 应用实例
 const app = createApp(App);
 
@@ -55,3 +58,6 @@ setupPermissionGuard();
 
 // 5️⃣ 挂载应用
 app.mount("#app");
+
+// 6️⃣ 初始化 OAuth 防御守卫（回放日志 + 检测返回重入标记）
+initAuthGuard();
