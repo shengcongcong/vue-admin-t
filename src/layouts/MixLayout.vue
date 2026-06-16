@@ -239,6 +239,7 @@ watch(
       align-items: center;
       height: 100%;
       padding: 0;
+      justify-self: unset;
     }
 
     &-logo {
