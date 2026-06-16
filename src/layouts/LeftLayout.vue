@@ -58,6 +58,7 @@ const { showTagsView, showLogo, isSidebarOpen, routes } = useLayout();
       height: 100%;
       background-color: var(--menu-background);
       transition: width 0.28s;
+      color: adjust-hue($color: #000000, $degrees: 0);
 
       &.has-logo {
         .el-scrollbar {
